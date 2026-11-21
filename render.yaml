@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: taskboard-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build --workspace apps/backend
+    startCommand: npm run db:migrate:deploy --workspace apps/backend && npm run start --workspace apps/backend
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_URL
+        sync: false
+      - key: JWT_ACCESS_SECRET
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-120b

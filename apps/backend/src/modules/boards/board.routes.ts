@@ -1,0 +1,21 @@
+import { Router } from 'express';
+import { authenticateUser } from '../../middleware/authenticate.js';
+import { validate } from '../../middleware/validate.js';
+import { createBoardSchema, reorderCardsSchema, reorderListsSchema, updateBoardSchema } from './board.schemas.js';
+import { createBoard, deleteBoard, getBoard, getBoards, reorderCards, reorderLists, updateBoard } from './board.controller.js';
+import { createList, getLists } from '../lists/list.controller.js';
+import { createListSchema } from '../lists/list.schemas.js';
+import { generateBoardSummary } from './board.controller.js';
+
+export const boardRouter = Router();
+boardRouter.use(authenticateUser);
+boardRouter.post('/', validate(createBoardSchema), createBoard);
+boardRouter.get('/', getBoards);
+boardRouter.get('/:boardId', getBoard);
+boardRouter.patch('/:boardId', validate(updateBoardSchema), updateBoard);
+boardRouter.delete('/:boardId', deleteBoard);
+boardRouter.patch('/:boardId/cards/reorder', validate(reorderCardsSchema), reorderCards);
+boardRouter.patch('/:boardId/lists/reorder', validate(reorderListsSchema), reorderLists);
+boardRouter.post('/:boardId/lists', validate(createListSchema), createList);
+boardRouter.get('/:boardId/lists', getLists);
+boardRouter.post('/:boardId/ai-summary', generateBoardSummary);
