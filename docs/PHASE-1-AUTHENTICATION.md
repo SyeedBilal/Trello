@@ -323,7 +323,11 @@ On initial page load, `AuthProvider.restoreSession` calls:
 POST /api/auth/refresh
 ```
 
-The browser includes the HttpOnly refresh cookie automatically because `credentials: "include"` is enabled.
+The browser includes the HttpOnly refresh cookie automatically because `credentials: "include"` is enabled. While this initial request is pending, protected routes show a session-restoration state.
+
+After an access token is restored or issued, the frontend schedules a refresh one minute before its JWT expiry. This refresh runs in the background without setting the initial page-loading state again. If a protected API request still receives `401`, the API client shares one refresh request across concurrent calls and retries that request once with the new access token.
+
+The refresh promise is shared within the current tab. The access token remains in React memory and is never written to local storage.
 
 The backend flow is:
 
@@ -474,6 +478,6 @@ Cookie: refresh_token=<raw-refresh-token>
 - Zod validates request bodies before services execute.
 - Database credentials and JWT secrets remain in environment variables.
 
-## 14. Known Phase 1 limitation
+## 14. Refresh latency
 
-The access token is not automatically retried after it expires. A future protected API call will receive `401`, and the frontend does not yet have a centralized retry-and-refresh mechanism. Browser startup currently restores the session by refreshing once.
+Signing a JWT is inexpensive. Refresh latency is primarily the database lookup and refresh-token rotation, plus any cold start or database connection delay from the hosting provider. A free backend instance may sleep between requests; the proactive refresh helps keep it responsive while a user has the app open, but cannot eliminate a cold start after a long inactive period or a browser restart. For consistently low latency, use an always-on backend and keep it geographically close to the database.
