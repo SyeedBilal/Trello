@@ -1,5 +1,5 @@
 import type { ErrorRequestHandler, RequestHandler } from 'express';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '../generated/prisma/client.js';
 import { AppError } from '../utils/errors.js';
 
 export const notFoundHandler: RequestHandler = (req, res) => {

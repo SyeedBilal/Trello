@@ -177,6 +177,8 @@ Set `DATABASE_URL` to the Neon pooled/runtime connection and `DIRECT_URL` to the
 
 Render's free service may sleep and have cold starts. Verify current free-tier requirements in the hosting dashboard before creating resources; if a payment method or paid plan is required, stop rather than upgrading.
 
+For an optional local demo helper, `BACKEND_URL=https://<your-render-service>.onrender.com npm run keep-backend-awake` pings `/api/health` every 10 minutes. Run it on a separate machine that stays online; it cannot run inside the backend service it is meant to wake. This consumes free instance hours and does not prevent Render-initiated restarts or suspensions.
+
 ### Remaining deployment steps
 
 - Push this project to a public GitHub repository; this workspace currently has no Git repository or remote.

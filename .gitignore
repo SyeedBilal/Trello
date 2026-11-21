@@ -6,3 +6,4 @@ dist/
 *.log
 coverage/
 .vercel/
+apps/backend/src/generated/
